@@ -4,8 +4,32 @@
 #include "color.h"
 #include "ray.h"
 
+bool hit_sphere(const point3 &center, const double radius, const ray &r)
+{
+  // To hit the sphere, there must be at least one point on the ray that is also on the sphere
+  // From len(r-center)=r we can get (r-center)*(r-center)=r*r
+  // r=A+tB, A is the origin of the ray, B is the direction of the ray, t is variable
+  // (A+tB-center)*(A+tB-center)=r*r
+  // (tB+(A-center))*(tB+(A-center))=r*r
+  // dot(B,B)*t*t+2*dot(B,A-center)*t+dot(A-center,A-center)=r*r
+  // This is a quadratic formula of t
+  // To solve quadratic, we use (-b±√(b²-4ac))/(2a)
+  // But here we just want to know if the ray hits the sphere or not
+  // So we just check if √(b²-4ac) can stand
+  vec3 dir = r.origin() - center;
+  double a = dot(r.direction(), r.direction());
+  double b = 2 * dot(r.direction(), dir);
+  double c = dot(dir, dir) - radius * radius;
+  double discriminant = b * b - 4 * a * c;
+  return discriminant >= 0;
+}
+
 color ray_color(ray r)
 {
+  if (hit_sphere(point3(0, 0, -1), 0.3, r))
+  {
+    return color(1, 0, 0);
+  }
   vec3 r_unit_vector = unit_vector(r.direction());
   return r_unit_vector;
 }
@@ -53,7 +77,6 @@ int main()
       }
     }
   }
-    
 
   std::clog << "\rDone.\n";
 }
