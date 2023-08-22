@@ -17,17 +17,17 @@ double hit_sphere(const point3 &center, const double radius, const ray &r)
   // But here we just want to know if the ray hits the sphere or not
   // So we just check if √(b²-4ac) can stand
   vec3 dir = r.origin() - center;
-  double a = dot(r.direction(), r.direction());
-  double b = 2 * dot(r.direction(), dir);
-  double c = dot(dir, dir) - radius * radius;
-  double discriminant = b * b - 4 * a * c;
+  double a = r.direction().length_squared();
+  double b_half = dot(r.direction(), dir);
+  double c = dir.length_squared() - radius * radius;
+  double discriminant = b_half * b_half - a * c;
   if (discriminant < 0)
   {
     return -1;
   }
   else
   {
-    return (-b - sqrt(discriminant)) / (2 * a);
+    return (-b_half - sqrt(discriminant)) / a;
   }
 }
 
