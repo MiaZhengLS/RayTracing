@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-bool sphere::hit(const ray &r, const double t_min, const double t_max, hit_record &rec) const
+bool sphere::hit(const ray &r, const interval &ray_interval, hit_record &rec) const
 {
   // To hit the sphere, there must be at least one point on the ray that is also on the sphere
   // From len(r-center)=r we can get (r-center)*(r-center)=r*r
@@ -24,10 +24,10 @@ bool sphere::hit(const ray &r, const double t_min, const double t_max, hit_recor
   double sqrt_d = sqrt(discriminant);
   double result = (-b_half - sqrt_d) / a;
   // Try another result
-  if (result <= t_min || result >= t_max)
+  if (!ray_interval.contains(result))
   {
     result = (-b_half + sqrt_d) / a;
-    if (result <= t_min || result >= t_max)
+    if (!ray_interval.contains(result))
     {
       return false;
     }

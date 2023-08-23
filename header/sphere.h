@@ -12,7 +12,7 @@ private:
 public:
   sphere(const point3 &center, const double radius) : center_(center), radius_(radius) {}
   ~sphere() {}
-  bool hit(const ray &r, const double t_min, const double t_max, hit_record &rec) const override;
+  bool hit(const ray &r, const interval &ray_interval, hit_record &rec) const override;
 };
 
 #endif

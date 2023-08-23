@@ -19,7 +19,7 @@ public:
   hittable_list(shared_ptr<hittable> object) { add(object); }
   void clear() { objects_.clear(); }
   void add(shared_ptr<hittable> object) { objects_.push_back(object); }
-  bool hit(const ray &r, double t_min, double t_max, hit_record &rec) const override;
+  bool hit(const ray &r, const interval &ray_interval, hit_record &rec) const override;
 };
 
 
