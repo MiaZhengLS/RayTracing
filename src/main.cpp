@@ -5,15 +5,14 @@
 #include "hittable_list.h"
 #include "sphere.h"
 
-color ray_color(ray r)
+color ray_color(ray r, hittable_list world)
 {
-  sphere s(point3(0, 0, -1), 0.3);
   hit_record rec;
-  bool hit = s.hit(r, 0.01, 10, rec);
-  if (hit)
+  if (world.hit(r, 0.1, 1000, rec))
   {
-    return 0.5 * color(rec.normal().x() + 1, rec.normal().y() + 1, rec.normal().z() + 1);
+    return 0.5 * (rec.normal() + color(1, 1, 1));
   }
+
   vec3 r_unit_vector = unit_vector(r.direction());
   return r_unit_vector;
 }
@@ -26,6 +25,11 @@ int main()
   int image_height = static_cast<int>(image_width / aspect_ratio);
   image_height = (image_height < 1) ? 1 : image_height;
 
+  hittable_list world;
+  world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+  world.add(make_shared<sphere>(point3(0, -20, -5), 20));
+
+  // Camera
   double focal_length = 1.0;
   double viewport_height = 2.0;
   double viewport_width = viewport_height * static_cast<double>(image_width) / image_height;
@@ -56,7 +60,7 @@ int main()
         point3 pixel_center = pixel00_loc + pixel_delta_u * i + pixel_delta_v * j;
         vec3 ray_direction = pixel_center - camera_center;
         ray r(camera_center, ray_direction);
-        color pixel_color = ray_color(r);
+        color pixel_color = ray_color(r, world);
         write_color(outFile, pixel_color);
       }
     }
