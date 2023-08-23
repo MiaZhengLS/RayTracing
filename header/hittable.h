@@ -5,7 +5,7 @@
 
 class hit_record
 {
-private:
+public:
   point3 p;
   vec3 normal;
   double t;
@@ -15,7 +15,7 @@ class hittable
 {
 public:
   virtual ~hittable() = default;
-  virtual bool hit(const ray &r, double ray_tmin, double ray_tmax, hit_record& rec) const = 0;
+  virtual bool hit(const ray &r, const double ray_tmin, const double ray_tmax, hit_record &rec) const = 0;
 };
 
 #endif
