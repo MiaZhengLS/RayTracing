@@ -16,7 +16,9 @@ public:
   {
     p_ = p;
     t_ = t;
-    is_front_face_ = dot(ray_dir, outward_normal);
+    // If ray intersects the object from outside, the outward_normal points against the direction of the ray
+    // If ray intersects the object from inside, the outward_normal points similar direction with the ray
+    is_front_face_ = dot(ray_dir, outward_normal) < 0;
     normal_ = is_front_face_ ? outward_normal : -outward_normal;
   }
   vec3 normal() const { return normal_; }
