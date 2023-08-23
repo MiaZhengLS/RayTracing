@@ -22,6 +22,7 @@ public:
     normal_ = is_front_face_ ? outward_normal : -outward_normal;
   }
   vec3 normal() const { return normal_; }
+  double t() const { return t_; }
 };
 
 class hittable
