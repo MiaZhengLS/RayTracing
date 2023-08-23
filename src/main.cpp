@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include "vec3.h"
 #include "color.h"
-#include "ray.h"
+#include "common.h"
+#include "hittable_list.h"
 #include "sphere.h"
 
 color ray_color(ray r)
