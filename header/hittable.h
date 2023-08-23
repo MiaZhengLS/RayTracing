@@ -5,10 +5,21 @@
 
 class hit_record
 {
+private:
+  point3 p_;
+  vec3 normal_;
+  double t_;
+  bool is_front_face_;
+
 public:
-  point3 p;
-  vec3 normal;
-  double t;
+  void set_record(const point3 p, double t, vec3 outward_normal, vec3 ray_dir)
+  {
+    p_ = p;
+    t_ = t;
+    is_front_face_ = dot(ray_dir, outward_normal);
+    normal_ = is_front_face_ ? outward_normal : -outward_normal;
+  }
+  vec3 normal() const { return normal_; }
 };
 
 class hittable

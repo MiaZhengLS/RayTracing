@@ -12,7 +12,7 @@ color ray_color(ray r)
   bool hit = s.hit(r, 0.01, 10, rec);
   if (hit)
   {
-    return 0.5 * color(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+    return 0.5 * color(rec.normal().x() + 1, rec.normal().y() + 1, rec.normal().z() + 1);
   }
   vec3 r_unit_vector = unit_vector(r.direction());
   return r_unit_vector;

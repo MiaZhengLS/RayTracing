@@ -32,9 +32,8 @@ bool sphere::hit(const ray &r, const double t_min, const double t_max, hit_recor
       return false;
     }
   }
-  rec.p = r.at(result);
-  rec.t = result;
-  rec.normal = (rec.p - center_) / radius_;
+  vec3 p = r.at(result);
+  rec.set_record(p, result, (p - center_) / radius_, r.direction());
 
   return true;
 }
