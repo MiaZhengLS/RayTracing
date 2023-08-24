@@ -24,10 +24,10 @@ bool sphere::hit(const ray &r, const interval &ray_interval, hit_record &rec) co
   double sqrt_d = sqrt(discriminant);
   double result = (-b_half - sqrt_d) / a;
   // Try another result
-  if (!ray_interval.contains(result))
+  if (!ray_interval.surrounds(result))
   {
     result = (-b_half + sqrt_d) / a;
-    if (!ray_interval.contains(result))
+    if (!ray_interval.surrounds(result))
     {
       return false;
     }
