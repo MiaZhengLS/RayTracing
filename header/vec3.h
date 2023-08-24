@@ -3,8 +3,18 @@
 
 #include <cmath>
 #include <iostream>
+#include <cstdlib>
 
 using std::sqrt;
+inline double random_double()
+{
+  return rand() / (RAND_MAX + 1.0);
+}
+
+inline double random_double(double min, double max)
+{
+  return min + (max - min) * random_double();
+}
 
 class vec3
 {
@@ -49,6 +59,16 @@ public:
   double length() const
   {
     return sqrt(length_squared());
+  }
+
+  static vec3 random()
+  {
+    return vec3(random_double(), random_double(), random_double());
+  }
+
+  static vec3 random(double min, double max)
+  {
+    return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
   }
 
 private:
@@ -104,5 +124,20 @@ inline std::ostream &operator<<(std::ostream &out, const vec3 &v)
 {
   return out << v[0] << ' ' << v[1] << ' ' << v[2];
 }
+
+inline vec3 random_on_hemisphere(const vec3 &normal)
+{
+  vec3 p = unit_vector(vec3::random(-1, 1));
+  if (dot(p, normal) > 0.0)
+  {
+    return p;
+  }
+  else
+  {
+    return -p;
+  }
+}
+
+
 
 #endif
