@@ -31,15 +31,33 @@ void camera::render(const hittable &world) const
       // std::clog << "\rScanlines remaining:" << (image_height - j) << " " << std::flush;
       for (size_t i = 0; i < img_width_; i++)
       {
-        point3 pixel_center = pixel00_loc_ + pixel_delta_u_ * i + pixel_delta_v_ * j;
-        vec3 ray_direction = pixel_center - center_;
-        ray r(center_, ray_direction);
-        color pixel_color = ray_color(r, world);
-        write_color(outFile, pixel_color);
+        color pixel_color;
+        for (size_t sample = 0; sample < sample_per_pixel_; sample++)
+        {
+          ray r = get_ray(i, j);
+          pixel_color += ray_color(r, world);
+        }
+        write_color(outFile, pixel_color, sample_per_pixel_);
       }
     }
   }
   std::clog << "\rDone.\n";
+}
+
+ray camera::get_ray(int i, int j) const
+{
+  vec3 pixel_center = pixel00_loc_ + i * pixel_delta_u_ + j * pixel_delta_v_;
+  vec3 pixel_sample = pixel_center + pixel_sample_square();
+  vec3 ray_origin = center_;
+  vec3 ray_dir = pixel_sample - ray_origin;
+  return ray(ray_origin, ray_dir);
+}
+
+vec3 camera::pixel_sample_square() const
+{
+  double px = -0.5 + random_double();
+  double py = -0.5 + random_double();
+  return (px * pixel_delta_u_) + (py * pixel_delta_v_);
 }
 
 color camera::ray_color(ray r, const hittable &world) const

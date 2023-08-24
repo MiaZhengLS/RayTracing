@@ -19,8 +19,11 @@ private:
   vec3 pixel_delta_v_;
   point3 viewport_upper_left_;
   point3 pixel00_loc_;
+  int sample_per_pixel_ = 10;
 
   color ray_color(ray r, const hittable &world) const;
+  ray get_ray(int i, int j) const;
+  vec3 pixel_sample_square() const;
 
 public:
   camera(point3 center, double aspect_ratio, int img_width, double focal_length, double viewport_height);
