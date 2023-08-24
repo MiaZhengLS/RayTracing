@@ -15,6 +15,6 @@ int main()
   double focal_length = 1.0;
   double viewport_height = 2.0;
   point3 camera_center = point3(0, 0, 0);
-  camera main_camera(camera_center, aspect_ratio, image_width, focal_length, viewport_height);
+  camera main_camera(camera_center, aspect_ratio, image_width, focal_length, viewport_height, 50);
   main_camera.render(world);
 }

@@ -2,7 +2,7 @@
 
 #include "camera.h"
 
-camera::camera(point3 center, double aspect_ratio, int img_width, double focal_length, double viewport_height) : center_(center), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), viewport_height_(viewport_height)
+camera::camera(point3 center, double aspect_ratio, int img_width, double focal_length, double viewport_height, const int max_depth) : center_(center), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), viewport_height_(viewport_height), max_depth_(max_depth)
 {
   int h = static_cast<int>(img_width_ / aspect_ratio_);
   img_height_ = h < 1 ? 1 : h;
@@ -35,7 +35,7 @@ void camera::render(const hittable &world) const
         for (size_t sample = 0; sample < sample_per_pixel_; sample++)
         {
           ray r = get_ray(i, j);
-          pixel_color += ray_color(r, world);
+          pixel_color += ray_color(r, max_depth_, world);
         }
         write_color(outFile, pixel_color, sample_per_pixel_);
       }
@@ -63,13 +63,17 @@ vec3 camera::pixel_sample_square() const
   return (px * pixel_delta_u_) + (py * pixel_delta_v_);
 }
 
-color camera::ray_color(ray r, const hittable &world) const
+color camera::ray_color(ray r, const int max_depth, const hittable &world) const
 {
+  if (max_depth == 0)
+  {
+    return color(1, 1, 1);
+  }
   hit_record rec;
   if (world.hit(r, interval(0, infinity), rec))
   {
     vec3 dir = random_on_hemisphere(rec.normal());
-    return 0.5 * ray_color(ray(rec.p(), dir), world);
+    return 0.5 * ray_color(ray(rec.p(), dir), max_depth - 1, world);
   }
 
   vec3 r_unit_vector = unit_vector(r.direction());
