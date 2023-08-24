@@ -23,6 +23,7 @@ public:
   }
   vec3 normal() const { return normal_; }
   double t() const { return t_; }
+  vec3 p() const { return p_; }
 };
 
 class hittable
