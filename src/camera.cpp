@@ -53,6 +53,9 @@ ray camera::get_ray(int i, int j) const
   return ray(ray_origin, ray_dir);
 }
 
+// See https://www.researchgate.net/publication/244986797 for a better understanding of pixels
+// Pixel is just a point, not a square
+// We sample within the square(we define) with the pixel as the center
 vec3 camera::pixel_sample_square() const
 {
   double px = -0.5 + random_double();
@@ -69,5 +72,6 @@ color camera::ray_color(ray r, const hittable &world) const
   }
 
   vec3 r_unit_vector = unit_vector(r.direction());
-  return r_unit_vector;
+  double a = 0.5 * (r_unit_vector.y() + 1.0);
+  return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
