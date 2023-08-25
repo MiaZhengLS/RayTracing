@@ -73,7 +73,7 @@ color camera::ray_color(ray r, const int max_depth, const hittable &world) const
   // Use 0.001 instead of 0 to avoid shadow acene(self shadowing)
   if (world.hit(r, interval(0.001, infinity), rec))
   {
-    vec3 dir = random_on_hemisphere(rec.normal());
+    vec3 dir = rec.normal() + random_on_hemisphere(rec.normal());
     return 0.5 * ray_color(ray(rec.p(), dir), max_depth - 1, world);
   }
 
