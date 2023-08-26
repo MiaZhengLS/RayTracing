@@ -29,6 +29,7 @@ public:
   double t() const { return t_; }
   vec3 p() const { return p_; }
   shared_ptr<material> mat() const { return mat_; }
+  bool is_front_face() const { return is_front_face_; }
 };
 
 class hittable

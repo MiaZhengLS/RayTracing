@@ -149,9 +149,17 @@ inline vec3 random_on_hemisphere(const vec3 &normal)
   }
 }
 
-inline vec3 reflect(const vec3 &normal, const vec3 &in_ray)
+inline vec3 reflect(const vec3 &normal, const vec3 &in_dir)
 {
-  return in_ray - 2 * dot(normal, in_ray) * normal;
+  return in_dir - 2 * dot(normal, in_dir) * normal;
+}
+
+inline vec3 refract(const vec3 &normal, const vec3 &in_dir, const double eta_ratio)
+{
+  double cos_theta = fmin(dot(normal, -in_dir), 1.0);
+  vec3 refract_perpendicular = eta_ratio * (in_dir + cos_theta * normal);
+  vec3 refract_parallel = -sqrt(abs(1 - refract_perpendicular.length_squared())) * normal;
+  return refract_perpendicular + refract_parallel;
 }
 
 #endif
