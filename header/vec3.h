@@ -61,6 +61,12 @@ public:
     return sqrt(length_squared());
   }
 
+  bool near_zero() const
+  {
+    double n = 1e-8;
+    return fabs(e_[0]) < n && fabs(e_[1]) < n && fabs(e_[2]) < n;
+  }
+
   static vec3 random()
   {
     return vec3(random_double(), random_double(), random_double());
@@ -137,7 +143,5 @@ inline vec3 random_on_hemisphere(const vec3 &normal)
     return -p;
   }
 }
-
-
 
 #endif
