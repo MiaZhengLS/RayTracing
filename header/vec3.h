@@ -131,9 +131,14 @@ inline std::ostream &operator<<(std::ostream &out, const vec3 &v)
   return out << v[0] << ' ' << v[1] << ' ' << v[2];
 }
 
+inline vec3 random_unit_vector()
+{
+  return unit_vector(vec3::random(-1, 1));
+}
+
 inline vec3 random_on_hemisphere(const vec3 &normal)
 {
-  vec3 p = unit_vector(vec3::random(-1, 1));
+  vec3 p = random_unit_vector();
   if (dot(p, normal) > 0.0)
   {
     return p;

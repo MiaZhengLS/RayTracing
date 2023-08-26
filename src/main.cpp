@@ -13,8 +13,8 @@ int main()
 
   shared_ptr<material> mat_ground = make_shared<lambertian>(color(0.8, 0.8, 0.8));
   shared_ptr<material> mat_middle = make_shared<lambertian>(color(0.7, 0.3, 0.3));
-  shared_ptr<material> mat_left = make_shared<metal>(color(0.8, 0.8, 0.8));
-  shared_ptr<material> mat_right = make_shared<metal>(color(0.8, 0.6, 0.2));
+  shared_ptr<material> mat_left = make_shared<metal>(color(0.8, 0.8, 0.8), 0.2);
+  shared_ptr<material> mat_right = make_shared<metal>(color(0.8, 0.6, 0.2), 0.9);
 
   world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, mat_ground));
   world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5, mat_middle));
