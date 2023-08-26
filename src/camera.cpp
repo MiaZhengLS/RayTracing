@@ -1,6 +1,7 @@
 #include <fstream>
 
 #include "camera.h"
+#include "material.h"
 
 camera::camera(point3 center, double aspect_ratio, int img_width, double focal_length, double viewport_height, const int max_depth) : center_(center), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), viewport_height_(viewport_height), max_depth_(max_depth)
 {
@@ -73,13 +74,13 @@ color camera::ray_color(ray r, const int max_depth, const hittable &world) const
   // Use 0.001 instead of 0 to avoid shadow acene(self shadowing)
   if (world.hit(r, interval(0.001, infinity), rec))
   {
-    vec3 scatter_dir = rec.normal() + random_on_hemisphere(rec.normal());
-    // Avoid infinities / NaNs
-    if (scatter_dir.near_zero())
+    color attenuation;
+    ray scattered_ray;
+    if (rec.mat()->scatter(r, rec, attenuation, scattered_ray))
     {
-      scatter_dir = rec.normal();
+      return attenuation * ray_color(scattered_ray, max_depth - 1, world);
     }
-    return 0.5 * ray_color(ray(rec.p(), scatter_dir), max_depth - 1, world);
+    return color(0, 0, 0);
   }
 
   vec3 r_unit_vector = unit_vector(r.direction());

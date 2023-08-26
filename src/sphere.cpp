@@ -33,7 +33,7 @@ bool sphere::hit(const ray &r, const interval &ray_interval, hit_record &rec) co
     }
   }
   vec3 p = r.at(result);
-  rec.set_record(p, result, (p - center_) / radius_, r.direction());
+  rec.set_record(p, result, (p - center_) / radius_, r.direction(), mat_);
 
   return true;
 }
