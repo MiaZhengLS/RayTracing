@@ -3,7 +3,7 @@
 #include "camera.h"
 #include "material.h"
 
-camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, double aspect_ratio, int img_width, double focal_length, const int max_depth, double vfov) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), max_depth_(max_depth), vfov_(vfov)
+camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focal_length, const int max_depth, const double vfov) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), max_depth_(max_depth), vfov_(vfov)
 {
   int h = static_cast<int>(img_width_ / aspect_ratio_);
   img_height_ = h < 1 ? 1 : h;
