@@ -3,11 +3,13 @@
 #include "camera.h"
 #include "material.h"
 
-camera::camera(point3 center, double aspect_ratio, int img_width, double focal_length, double viewport_height, const int max_depth) : center_(center), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), viewport_height_(viewport_height), max_depth_(max_depth)
+camera::camera(point3 center, double aspect_ratio, int img_width, double focal_length, const int max_depth, double vfov) : center_(center), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), max_depth_(max_depth), vfov_(vfov)
 {
   int h = static_cast<int>(img_width_ / aspect_ratio_);
   img_height_ = h < 1 ? 1 : h;
 
+  double radian = degree_to_radian(vfov_);
+  viewport_height_ = tan(radian / 2) * focal_length_ * 2;
   viewport_width_ = viewport_height_ * static_cast<double>(img_width_) / img_height_;
 
   vec3 viewport_u = vec3(viewport_width_, 0, 0);

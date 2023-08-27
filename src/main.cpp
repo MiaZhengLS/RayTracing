@@ -25,8 +25,7 @@ int main()
   double aspect_ratio = 16.0 / 9.0;
   int image_width = 400;
   double focal_length = 1.0;
-  double viewport_height = 2.0;
   point3 camera_center = point3(0, 0, 0);
-  camera main_camera(camera_center, aspect_ratio, image_width, focal_length, viewport_height, 50);
+  camera main_camera(camera_center, aspect_ratio, image_width, focal_length, 50, 80);
   main_camera.render(world);
 }
