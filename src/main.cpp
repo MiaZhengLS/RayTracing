@@ -12,7 +12,7 @@ int main()
 {
   hittable_list world;
 
-  shared_ptr<material> mat_ground = make_shared<lambertian>(color(0.8, 0.8, 0.8));
+  shared_ptr<material> mat_ground = make_shared<lambertian>(color(0.6, 0.9, 0.6));
   shared_ptr<material> mat_middle = make_shared<lambertian>(color(0.7, 0.3, 0.3));
   shared_ptr<material> mat_left = make_shared<dielectric>(1.5);
   shared_ptr<material> mat_right = make_shared<metal>(color(0.8, 0.6, 0.2), 0.9);
