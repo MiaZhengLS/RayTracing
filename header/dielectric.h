@@ -17,6 +17,8 @@ public:
     double cos_theta = dot(unit_vector(in_ray.direction()), rec.normal());
     double sin_theta = sqrt(1 - cos_theta * cos_theta);
     vec3 scattered_dir;
+    // Internal total reflection 
+    // https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
     // sin(theta') = sin(theta) * eta_ratio
     // Invalid sin value -> no refraction
     if (eta_ratio * sin_theta > 1.0)
