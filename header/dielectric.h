@@ -24,7 +24,7 @@ public:
   {
     attenuation = color(1, 1, 1);
     double refraction_ratio = rec.is_front_face() ? 1.0 / refraction_index_ : refraction_index_;
-    double cos_theta = dot(unit_vector(in_ray.direction()), rec.normal());
+    double cos_theta = fmin(dot(-unit_vector(in_ray.direction()), rec.normal()), 1.0);
     double sin_theta = sqrt(1 - cos_theta * cos_theta);
     vec3 scattered_dir;
     // Internal total reflection
