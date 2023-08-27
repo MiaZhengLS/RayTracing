@@ -6,16 +6,28 @@
 class dielectric : public material
 {
 private:
-  double index_refraction_;
+  double refraction_index_;
 
 public:
-  dielectric(double index_refraction) : index_refraction_(index_refraction < 1 ? 1 : index_refraction) {}
+  dielectric(double refraction_index) : refraction_index_(refraction_index < 1 ? 1 : refraction_index) {}
   bool scatter(const ray &in_ray, const hit_record &rec, color &attenuation, ray &scattered_ray) const override
   {
     attenuation = color(1, 1, 1);
-    double eta_ratio = rec.is_front_face() ? 1.0 / index_refraction_ : index_refraction_;
-    vec3 refract_dir = refract(rec.normal(), unit_vector(in_ray.direction()), eta_ratio);
-    scattered_ray = ray(rec.p(), refract_dir);
+    double eta_ratio = rec.is_front_face() ? 1.0 / refraction_index_ : refraction_index_;
+    double cos_theta = dot(unit_vector(in_ray.direction()), rec.normal());
+    double sin_theta = sqrt(1 - cos_theta * cos_theta);
+    vec3 scattered_dir;
+    // sin(theta') = sin(theta) * eta_ratio
+    // Invalid sin value -> no refraction
+    if (eta_ratio * sin_theta > 1.0)
+    {
+      scattered_dir = reflect(rec.normal(), in_ray.direction());
+    }
+    else
+    {
+      scattered_dir = refract(rec.normal(), unit_vector(in_ray.direction()), eta_ratio);
+    }
+    scattered_ray = ray(rec.p(), scattered_dir);
     return true;
   }
 };
