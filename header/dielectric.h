@@ -4,6 +4,8 @@
 #include "material.h"
 #include "vec3.h"
 
+// Schlick's approximation for Fresnel:
+// The steeper angle we observe a thing, the higher the reflection
 inline double reflectance(double cos_theta, double refraction_ratio)
 {
   double r0 = (1 - refraction_ratio) / (1 + refraction_ratio);
