@@ -3,22 +3,26 @@
 #include "camera.h"
 #include "material.h"
 
-camera::camera(point3 center, double aspect_ratio, int img_width, double focal_length, const int max_depth, double vfov) : center_(center), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), max_depth_(max_depth), vfov_(vfov)
+camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, double aspect_ratio, int img_width, double focal_length, const int max_depth, double vfov) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), max_depth_(max_depth), vfov_(vfov)
 {
   int h = static_cast<int>(img_width_ / aspect_ratio_);
   img_height_ = h < 1 ? 1 : h;
 
-  double radian = degree_to_radian(vfov_);
-  viewport_height_ = tan(radian / 2) * focal_length_ * 2;
-  viewport_width_ = viewport_height_ * static_cast<double>(img_width_) / img_height_;
+  const vec3 w = -unit_vector(look_dir);
+  const vec3 u = unit_vector(cross(v_up_, w));
+  const vec3 v = cross(w, u);
 
-  vec3 viewport_u = vec3(viewport_width_, 0, 0);
-  vec3 viewport_v = vec3(0, -viewport_height_, 0);
+  double radian = degree_to_radian(vfov_);
+  double viewport_height = tan(radian / 2) * focal_length_ * 2;
+  viewport_width_ = viewport_height * static_cast<double>(img_width_) / img_height_;
+
+  vec3 viewport_u = viewport_width_ * u;
+  vec3 viewport_v = -viewport_height * v;
 
   pixel_delta_u_ = viewport_u / img_width_;
   pixel_delta_v_ = viewport_v / img_height_;
 
-  viewport_upper_left_ = center_ - vec3(0, 0, focal_length_) - viewport_u / 2 - viewport_v / 2;
+  viewport_upper_left_ = look_from_ - focal_length_ * w - viewport_u / 2 - viewport_v / 2;
   pixel00_loc_ = viewport_upper_left_ + pixel_delta_u_ / 2 + pixel_delta_v_ / 2;
 }
 
@@ -51,7 +55,7 @@ ray camera::get_ray(int i, int j) const
 {
   vec3 pixel_center = pixel00_loc_ + i * pixel_delta_u_ + j * pixel_delta_v_;
   vec3 pixel_sample = pixel_center + pixel_sample_square();
-  vec3 ray_origin = center_;
+  vec3 ray_origin = look_from_;
   vec3 ray_dir = pixel_sample - ray_origin;
   return ray(ray_origin, ray_dir);
 }
