@@ -149,6 +149,11 @@ inline vec3 random_on_hemisphere(const vec3 &normal)
   }
 }
 
+inline vec3 random_on_disk()
+{
+  return random_double(-1, 1) * unit_vector(vec3(random_double(-1, 1), random_double(-1, 1), 0));
+}
+
 inline vec3 reflect(const vec3 &normal, const vec3 &in_dir)
 {
   return in_dir - 2 * dot(normal, in_dir) * normal;

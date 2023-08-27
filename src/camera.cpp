@@ -3,7 +3,7 @@
 #include "camera.h"
 #include "material.h"
 
-camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focal_length, const int max_depth, const double vfov) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focal_length_(focal_length), max_depth_(max_depth), vfov_(vfov)
+camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focus_dist, const int max_depth, const double vfov, double defocus_angle) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focus_dist_(focus_dist), max_depth_(max_depth), vfov_(vfov), defocus_angle_(defocus_angle)
 {
   int h = static_cast<int>(img_width_ / aspect_ratio_);
   img_height_ = h < 1 ? 1 : h;
@@ -13,7 +13,7 @@ camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, 
   const vec3 v = cross(w, u);
 
   double radian = degree_to_radian(vfov_);
-  double viewport_height = tan(radian / 2) * focal_length_ * 2;
+  double viewport_height = tan(radian / 2) * focus_dist_ * 2;
   viewport_width_ = viewport_height * static_cast<double>(img_width_) / img_height_;
 
   vec3 viewport_u = viewport_width_ * u;
@@ -22,8 +22,12 @@ camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, 
   pixel_delta_u_ = viewport_u / img_width_;
   pixel_delta_v_ = viewport_v / img_height_;
 
-  viewport_upper_left_ = look_from_ - focal_length_ * w - viewport_u / 2 - viewport_v / 2;
+  viewport_upper_left_ = look_from_ - focus_dist_ * w - viewport_u / 2 - viewport_v / 2;
   pixel00_loc_ = viewport_upper_left_ + pixel_delta_u_ / 2 + pixel_delta_v_ / 2;
+
+  const double defocus_radius = focus_dist_ * tan(degree_to_radian(defocus_angle_ / 2));
+  defocus_u_ = u * defocus_radius;
+  defocus_v_ = v * defocus_radius;
 }
 
 void camera::render(const hittable &world) const
@@ -55,9 +59,15 @@ ray camera::get_ray(int i, int j) const
 {
   vec3 pixel_center = pixel00_loc_ + i * pixel_delta_u_ + j * pixel_delta_v_;
   vec3 pixel_sample = pixel_center + pixel_sample_square();
-  vec3 ray_origin = look_from_;
+  vec3 ray_origin = defocus_angle_ <= 0 ? look_from_ : defocus_get_ray();
   vec3 ray_dir = pixel_sample - ray_origin;
   return ray(ray_origin, ray_dir);
+}
+
+vec3 camera::defocus_get_ray() const
+{
+  const vec3 rd = random_on_disk();
+  return look_from_ + defocus_u_ * rd[0] + defocus_v_ * rd[1];
 }
 
 // See https://www.researchgate.net/publication/244986797 for a better understanding of pixels
