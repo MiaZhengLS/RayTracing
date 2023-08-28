@@ -23,19 +23,24 @@ public:
   {
     return (idx == 0 ? interval_x_ : (idx == 1 ? interval_y_ : interval_z_));
   }
-  
+
   bool hit(const ray &r, const interval &r_interval)
   {
-    int overlap_min = r_interval.min();
-    int overlap_max = r_interval.max();
+    double overlap_min = r_interval.min();
+    double overlap_max = r_interval.max();
     for (int i = 0; i < 3; ++i)
     {
-      double t0 = (axis(i).min() - r.origin()[i]) / r.direction()[i];
-      double t1 = (axis(i).max() - r.origin()[i]) / r.direction()[i];
-      double t_min = fmin(t0, t1);
-      double t_max = fmax(t0, t1);
-      overlap_min = fmax(t_min, overlap_min);
-      overlap_max = fmin(t_max, overlap_max);
+      const double inv_dir = 1.0 / r.direction()[i];
+      double t0 = (axis(i).min() - r.origin()[i]) * inv_dir;
+      double t1 = (axis(i).max() - r.origin()[i]) * inv_dir;
+      if (inv_dir < 0)
+      {
+        std::swap(t0, t1);
+      }
+      if (t0 > overlap_min)
+        overlap_min = t0;
+      if (t1 < overlap_max)
+        overlap_max = t1;
       if (overlap_min >= overlap_max)
       {
         return false;
