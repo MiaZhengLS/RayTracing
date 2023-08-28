@@ -30,6 +30,11 @@ public:
     double overlap_max = r_interval.max();
     for (int i = 0; i < 3; ++i)
     {
+      // Handle "divided by zero" with IEEE 754 floating-point number
+      // https://en.wikipedia.org/wiki/IEEE_754#:~:text=Many%20hardware%20floating%2Dpoint%20units,a%20number%22%20values%20(NaNs)
+      // Simply put, we don't need to manually handle it
+      // If denominator is 0 and nominator is not, we get +infinity/-infinity based on the sign of nominator
+      // If nominator is also 0, we get NaNs(not a number values)
       const double inv_dir = 1.0 / r.direction()[i];
       double t0 = (axis(i).min() - r.origin()[i]) * inv_dir;
       double t1 = (axis(i).max() - r.origin()[i]) * inv_dir;
