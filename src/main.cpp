@@ -1,5 +1,4 @@
 #include <iostream>
-#include <set>
 #include "common.h"
 #include "hittable_list.h"
 #include "sphere.h"
@@ -16,7 +15,7 @@ int main()
   world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, mat_ground));
   const double r = 0.2;
   const double min_dist = 4 * pow(r, 2);
-  std::set<point3> all_centers;
+  std::vector<point3> all_centers;
   auto collide_with_others = [&](const point3 &new_center)
   {
     for (const point3 &previous_center : all_centers)
@@ -28,19 +27,18 @@ int main()
     }
     return false;
   };
-  int valid_spheres = 0;
-  for (int i = -5; i < 5; ++i)
+  for (int i = -10; i < 10; ++i)
   {
-    for (int j = -10; j < 10; ++j)
+    for (int j = -6; j < 6; ++j)
     {
-      const point3 center = vec3(i, r, j) + vec3(random_double(-3, 5), 0, random_double(-3, 5));
-      if (center.length_squared() > 9 && !collide_with_others(center))
+      const point3 center = vec3(i, r, j) + vec3(random_double(-5, 5), 0, random_double(-5, 5));
+      if (center.length_squared() >= 9 && !collide_with_others(center))
       {
-        valid_spheres++;
-        all_centers.insert(center);
+        all_centers.push_back(center);
+
         const double rd_mat = random_double(0, 1);
         shared_ptr<material> mat;
-        if (rd_mat < 0.3)
+        if (rd_mat < 0.4)
         {
           mat = make_shared<lambertian>(color::random());
         }
@@ -56,7 +54,7 @@ int main()
       }
     }
   }
-  std::cout << "valid sphere " << valid_spheres << std::endl;
+  std::cout << "valid sphere " << all_centers.size() << std::endl;
   point3 in_focus_pos = point3(-0.4, 1, -2);
   shared_ptr<material> mat_glass = make_shared<dielectric>(1.5);
   world.add(make_shared<sphere>(in_focus_pos, 1, mat_glass));
