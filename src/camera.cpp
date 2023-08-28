@@ -1,9 +1,7 @@
-#include <fstream>
-
 #include "camera.h"
 #include "material.h"
 
-camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focus_dist, const int max_depth, const double vfov, double defocus_angle) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focus_dist_(focus_dist), max_depth_(max_depth), vfov_(vfov), defocus_angle_(defocus_angle)
+camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focus_dist, const int sample_per_pixel, const int max_depth, const double vfov, double defocus_angle) : look_from_(look_from), look_dir_(look_dir), v_up_(v_up), aspect_ratio_(aspect_ratio), img_width_(img_width), focus_dist_(focus_dist), sample_per_pixel_(sample_per_pixel), max_depth_(max_depth), vfov_(vfov), defocus_angle_(defocus_angle)
 {
   int h = static_cast<int>(img_width_ / aspect_ratio_);
   img_height_ = h < 1 ? 1 : h;
@@ -30,26 +28,23 @@ camera::camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, 
   defocus_v_ = v * defocus_radius;
 }
 
-void camera::render(const hittable &world) const
+void camera::render_to_stream(const hittable &world, std::ostream &output_stream) const
 {
-  std::ofstream outFile("./output.ppm");
-  if (outFile.is_open())
+  std::clog << "\rStart rendering...\n";
+  output_stream << "P3\n"
+                << img_width_ << " " << img_height_ << "\n255\n";
+  for (size_t j = 0; j < img_height_; j++)
   {
-    outFile << "P3\n"
-            << img_width_ << " " << img_height_ << "\n255\n";
-    for (size_t j = 0; j < img_height_; j++)
+    // std::clog << "\rScanlines remaining:" << (image_height - j) << " " << std::flush;
+    for (size_t i = 0; i < img_width_; i++)
     {
-      // std::clog << "\rScanlines remaining:" << (image_height - j) << " " << std::flush;
-      for (size_t i = 0; i < img_width_; i++)
+      color pixel_color;
+      for (size_t sample = 0; sample < sample_per_pixel_; sample++)
       {
-        color pixel_color;
-        for (size_t sample = 0; sample < sample_per_pixel_; sample++)
-        {
-          ray r = get_ray(i, j);
-          pixel_color += ray_color(r, max_depth_, world);
-        }
-        write_color(outFile, pixel_color, sample_per_pixel_);
+        ray r = get_ray(i, j);
+        pixel_color += ray_color(r, max_depth_, world);
       }
+      write_color(output_stream, pixel_color, sample_per_pixel_);
     }
   }
   std::clog << "\rDone.\n";

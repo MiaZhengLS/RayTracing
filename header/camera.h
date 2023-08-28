@@ -19,10 +19,9 @@ private:
   vec3 pixel_delta_u_;
   vec3 pixel_delta_v_;
   point3 viewport_upper_left_;
-  // 
   point3 pixel00_loc_;
   // The more samples per pixel, the less noise
-  int sample_per_pixel_ = 100;
+  int sample_per_pixel_ = 10;
   int max_depth_;
   double vfov_;
   // defocus_angle is used to calculate the blur radius, the higher, the blurrier
@@ -37,8 +36,8 @@ private:
   vec3 defocus_get_ray() const;
 
 public:
-  camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focus_dist, const int max_depth = 10, const double vfov = 45, double defocus_angle = 0);
-  void render(const hittable &world) const;
+  camera(const point3 &look_from, const vec3 &look_dir, const vec3 &v_up, const double aspect_ratio, const int img_width, const double focus_dist, const int sample_per_pixel, const int max_depth = 10, const double vfov = 45, double defocus_angle = 0);
+  void render_to_stream(const hittable &world, std::ostream &output_stream) const;
 };
 
 #endif
