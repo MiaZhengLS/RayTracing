@@ -19,11 +19,12 @@ private:
   vec3 pixel_delta_u_;
   vec3 pixel_delta_v_;
   point3 viewport_upper_left_;
+  // 
   point3 pixel00_loc_;
-  int sample_per_pixel_ = 10;
+  // The more samples per pixel, the less noise
+  int sample_per_pixel_ = 200;
   int max_depth_;
   double vfov_;
- 
   // defocus_angle is used to calculate the blur radius, the higher, the blurrier
   // defocus_u/v simply multiply blur radius with camera transform u/v
   double defocus_angle_;
