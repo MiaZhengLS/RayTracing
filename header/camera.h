@@ -22,7 +22,7 @@ private:
   // 
   point3 pixel00_loc_;
   // The more samples per pixel, the less noise
-  int sample_per_pixel_ = 200;
+  int sample_per_pixel_ = 100;
   int max_depth_;
   double vfov_;
   // defocus_angle is used to calculate the blur radius, the higher, the blurrier

@@ -15,13 +15,13 @@ int main()
   shared_ptr<material> mat_ground = make_shared<lambertian>(color(0.8, 0.8, 0.8));
   world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, mat_ground));
   const double r = 0.2;
-  const double r_square = r * r;
+  const double min_dist = 4 * pow(r, 2);
   std::set<point3> all_centers;
   auto collide_with_others = [&](const point3 &new_center)
   {
     for (const point3 &previous_center : all_centers)
     {
-      if ((new_center - previous_center).length_squared() < r_square)
+      if ((new_center - previous_center).length_squared() < min_dist)
       {
         return true;
       }
@@ -31,10 +31,10 @@ int main()
   int valid_spheres = 0;
   for (int i = -5; i < 5; ++i)
   {
-    for (int j = -5; j < 5; ++j)
+    for (int j = -10; j < 10; ++j)
     {
-      const point3 center = vec3(i, r, j) + vec3(random_double(-7, 7), 0, random_double(-7, 7));
-      if (center.length_squared() > 4 && !collide_with_others(center))
+      const point3 center = vec3(i, r, j) + vec3(random_double(-3, 5), 0, random_double(-3, 5));
+      if (center.length_squared() > 9 && !collide_with_others(center))
       {
         valid_spheres++;
         all_centers.insert(center);
@@ -57,19 +57,20 @@ int main()
     }
   }
   std::cout << "valid sphere " << valid_spheres << std::endl;
+  point3 in_focus_pos = point3(-0.4, 1, -2);
   shared_ptr<material> mat_glass = make_shared<dielectric>(1.5);
-  world.add(make_shared<sphere>(point3(0, 1, 0), 1, mat_glass));
-  shared_ptr<material> mat_metal = make_shared<metal>(color::random(), random_double(0, 1));
-  world.add(make_shared<sphere>(point3(2, 1, -1), 1, mat_metal));
+  world.add(make_shared<sphere>(in_focus_pos, 1, mat_glass));
+  shared_ptr<material> mat_metal = make_shared<metal>(color::random(0.3, 1), random_double(0, 1));
+  world.add(make_shared<sphere>(point3(-1.5, 1, 0.3), 1, mat_metal));
   shared_ptr<material> mat_lambertian = make_shared<lambertian>(color::random());
-  world.add(make_shared<sphere>(point3(-2, 1, 1), 1, mat_lambertian));
+  world.add(make_shared<sphere>(point3(2.5, 1, -.5), 1, mat_lambertian));
 
   double aspect_ratio = 16.0 / 9.0;
-  int image_width = 800;
-  point3 look_from = point3(8, 2.0, 3);
+  int image_width = 600;
+  point3 look_from = point3(-4, 2.2, -10);
   vec3 look_dir = -look_from;
   vec3 camera_up = vec3(0, 1, 0);
-  double focus_dist = look_from.length();
-  camera main_camera(look_from, look_dir, camera_up, aspect_ratio, image_width, focus_dist, 20, 30, 2);
+  double focus_dist = (look_from - in_focus_pos).length();
+  camera main_camera(look_from, look_dir, camera_up, aspect_ratio, image_width, focus_dist, 20, 30, 1.3);
   main_camera.render(world);
 }
