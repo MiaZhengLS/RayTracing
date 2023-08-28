@@ -1,6 +1,6 @@
 # RayTracing
 
-Practice with [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html). This is a pure CPU ray tracer.
+Practice with [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html). This is a pure CPU ray tracer using a brute-force approach.
 
 Features
 
@@ -21,7 +21,7 @@ Center glass ball solid
 
 <img width="600" alt="image" src="https://github.com/MiaZhengLS/RayTracing/assets/121979781/d422bade-70a6-4ac7-8451-85a213b1f12c">
 
-Center glass ball hollow
+Center glass ball hollow (actually this one is 193 balls)
 
 - samples per pixel = 20
 
