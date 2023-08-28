@@ -11,12 +11,19 @@ private:
   interval interval_z_;
 
 public:
-  aabb(const interval &interval_x, const interval &interval_y, const interval &interval_z) : interval_x_(interval_x), interval_y_(interval_y), interval_z_(interval_z) {}
-  aabb(const point3 &a, const point3 &b)
+  aabb() {}
+  aabb(const interval interval_x, const interval interval_y, const interval interval_z) : interval_x_(interval_x), interval_y_(interval_y), interval_z_(interval_z) {}
+  aabb(const point3 a, const point3 b)
   {
     interval_x_ = interval(fmin(a[0], b[0]), fmax(a[0], b[0]));
     interval_y_ = interval(fmin(a[1], b[1]), fmax(a[1], b[1]));
     interval_z_ = interval(fmin(a[2], b[2]), fmax(a[2], b[2]));
+  }
+  aabb(const aabb &a, const aabb &b)
+  {
+    interval_x_ = interval(a.axis(0), b.axis(0));
+    interval_y_ = interval(a.axis(1), b.axis(1));
+    interval_z_ = interval(a.axis(2), b.axis(2));
   }
 
   const interval &axis(int idx) const
@@ -24,7 +31,7 @@ public:
     return (idx == 0 ? interval_x_ : (idx == 1 ? interval_y_ : interval_z_));
   }
 
-  bool hit(const ray &r, const interval &r_interval)
+  bool hit(const ray &r, const interval &r_interval) const
   {
     double overlap_min = r_interval.min();
     double overlap_max = r_interval.max();

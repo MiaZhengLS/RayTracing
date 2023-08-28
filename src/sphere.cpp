@@ -2,6 +2,11 @@
 
 bool sphere::hit(const ray &r, const interval &ray_interval, hit_record &rec) const
 {
+  if (!bounding_box_.hit(r, ray_interval))
+  {
+    return false;
+  }
+
   // To hit the sphere, there must be at least one point on the ray that is also on the sphere
   // From len(r-center)=r we can get (r-center)*(r-center)=r*r
   // r=A+tB, A is the origin of the ray, B is the direction of the ray, t is variable

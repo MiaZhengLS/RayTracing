@@ -2,6 +2,7 @@
 #define INTERVAL_H
 
 #include <limits>
+#include "common.h"
 
 const double infinity = std::numeric_limits<double>::infinity();
 
@@ -14,6 +15,7 @@ private:
 public:
   interval() : min_(+infinity), max_(-infinity) {}
   interval(double min, double max) : min_(min), max_(max) {}
+  interval(const interval &a, const interval &b) : min_(fmin(a.min(), b.min())), max_(fmax(a.max(), b.max())) {}
   bool contains(double x) const { return x <= max_ && x >= min_; }
   bool surrounds(double x) const { return x < max_ && x > min_; }
   double clamp(double x) const
