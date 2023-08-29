@@ -70,8 +70,8 @@ vec3 camera::defocus_get_ray() const
 // We sample within the square(we define) with the pixel as the center
 vec3 camera::pixel_sample_square() const
 {
-  double px = -0.5 + random_double();
-  double py = -0.5 + random_double();
+  double px = -0.5 + random_double_01();
+  double py = -0.5 + random_double_01();
   return (px * pixel_delta_u_) + (py * pixel_delta_v_);
 }
 
