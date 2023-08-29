@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "common.h"
-#include "hittable_list.h"
+#include "bvh.h"
 #include "sphere.h"
 #include "camera.h"
 #include "color.h"
@@ -64,6 +64,8 @@ int main()
   world.add(make_shared<sphere>(point3(-1.5, 1, 0.3), 1, mat_metal));
   shared_ptr<material> mat_lambertian = make_shared<lambertian>(color::random());
   world.add(make_shared<sphere>(point3(2.5, 1, -.5), 1, mat_lambertian));
+
+  world = hittable_list(make_shared<bvh>(world));
 
   const double aspect_ratio = 16.0 / 9.0;
   const int image_width = 400;
