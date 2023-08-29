@@ -31,7 +31,7 @@ public:
     // https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
     // sin(theta') = sin(theta) * refraction_ratio
     // Invalid sin value -> no refraction
-    if (refraction_ratio * sin_theta > 1.0 || reflectance(cos_theta, refraction_ratio) > random_double())
+    if (refraction_ratio * sin_theta > 1.0 || reflectance(cos_theta, refraction_ratio) > random_double_01())
     {
       scattered_dir = reflect(rec.normal(), in_ray.direction());
     }
