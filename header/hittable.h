@@ -14,6 +14,8 @@ private:
   double t_;
   bool is_front_face_;
   shared_ptr<material> mat_;
+  double u_;
+  double v_;
 
 public:
   void set_record(const point3 &p, double t, const vec3 &outward_normal, const vec3 &ray_dir, const shared_ptr<material> &mat)
